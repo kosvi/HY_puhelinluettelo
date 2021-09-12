@@ -1,0 +1,27 @@
+{
+  "name": "puhelinluettelo",
+  "version": "1.0.0",
+  "description": "HY Full Stack Open 2021",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kosvi/HY_puhelinluettelo.git"
+  },
+  "author": "Ville Koskela",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kosvi/HY_puhelinluettelo/issues"
+  },
+  "homepage": "https://github.com/kosvi/HY_puhelinluettelo#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
