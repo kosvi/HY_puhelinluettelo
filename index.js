@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let persons = [
     {
         id: 1,
@@ -30,6 +32,39 @@ app.get('/info', (req, res) => {
 
 app.get('/api/persons', (req, res) => {
     res.json(persons)
+})
+
+app.post('/api/persons', (req, res) => {
+    if (!req.body.name || !req.body.number) {
+        // either name or number (or both) are missing
+        res.status(400).json({ error: 'required information missing' })
+        return
+    }
+    if (persons.some(p => p.name === req.body.name)) {
+        // name already exists
+        res.status(400).json({ error: 'name already exists in the phonebook' })
+    }
+    const name = req.body.name
+    const number = req.body.number
+    const id = Math.floor(Math.random() * 1000000)
+    const person = { id: id, name: name, number: number }
+    persons = persons.concat(person)
+
+    res.json(person)
+})
+
+app.get('/api/persons/:id', (req, res) => {
+    const person = persons.find(p => p.id === Number(req.params.id))
+    if (person)
+        res.json(person)
+    else
+        res.status(404).end()
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+    const newPersons = persons.filter(p => p.id !== Number(req.params.id))
+    persons = newPersons
+    res.status(204).end()
 })
 
 const PORT = 3001
