@@ -9,5 +9,6 @@ Completed:
 - 3.6 puhelinluettelon backend step6
 - 3.7 puhelinluettelon backend step7
 - 3.8 puhelinluettelon backend step8
+- 3.9 puhelinluettelon backend step9
 
 **All exercises** found [here](https://github.com/kosvi/HY_FullStack)

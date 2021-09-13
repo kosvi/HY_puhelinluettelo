@@ -73,7 +73,27 @@ app.delete('/api/persons/:id', (req, res) => {
     res.status(204).end()
 })
 
-const PORT = 3001
+app.put('/api/persons/:id', (req, res) => {
+    // little bit copy & paste here, I will refactor later
+    if (!req.body.name || !req.body.number) {
+        // either name or number (or both) are missing
+        res.status(400).json({ error: 'required information missing' })
+        return
+    }
+    if (persons.find(p => p.id === Number(req.params.id))) {
+        const name = req.body.name
+        const number = req.body.number
+        const id = Number(req.params.id)
+        const person = { id: id, name: name, number: number }
+        persons = persons.map(p => p.id !== id ? p : person)
+
+        res.json(person)
+    }
+    // this id wasn't found from database
+    res.status(404).end()
+})
+
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     // what ever we wanna do here
     console.log(`server started on port ${PORT}`)
