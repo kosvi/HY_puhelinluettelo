@@ -10,5 +10,6 @@ Completed:
 - 3.7 puhelinluettelon backend step7
 - 3.8 puhelinluettelon backend step8
 - 3.9 puhelinluettelon backend step9
+- 3.10 puhelinluettelon backend step10 [Heroku](https://puhelinluettelo-583475145.herokuapp.com/api/persons)
 
 **All exercises** found [here](https://github.com/kosvi/HY_FullStack)
