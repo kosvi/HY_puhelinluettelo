@@ -6,3 +6,13 @@ Content-Type: application/json
     "name": "Maija",
     "number": "12345"
 }
+
+### 
+PUT http://localhost:3001/api/persons/61437eee4a20932a0ddccdf5
+Content-Type: application/json
+
+{
+    "_id": "61437eee4a20932a0ddccdf5",
+    "name": "Maija Mehiläinen",
+    "number": "123"
+}
