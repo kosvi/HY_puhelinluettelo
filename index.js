@@ -25,11 +25,14 @@ const getAll = async () => {
 }
 
 const checkBody = (req, res) => {
+    return 0
+    /*
     if (!req.body.name || !req.body.number) {
         res.status(400).json({ error: 'required information missing' })
         return -1
     }
     return 0
+    */
 }
 
 app.get('/info', async (req, res, next) => {
@@ -59,7 +62,6 @@ app.post('/api/persons', async (req, res, next) => {
         const savedPerson = await person.save()
         res.json(savedPerson)
     } catch (error) {
-        // most likely the name already exists in the database
         next(error)
     }
 })
@@ -79,8 +81,7 @@ app.get('/api/persons/:id', async (req, res, next) => {
 
 app.delete('/api/persons/:id', async (req, res, next) => {
     try {
-        const response = await Person.findByIdAndDelete(req.params.id)
-        console.log(response)
+        await Person.findByIdAndDelete(req.params.id)
         res.status(204).end()
     } catch (error) {
         next(error)
@@ -114,8 +115,11 @@ const errorHandler = (err, req, res, next) => {
     console.log(err.message)
     if (err.name === 'CastError')
         return res.status(400).send({ error: 'malformed id' })
-    if (err.code === 11000)
-        return res.status(400).send({ error: 'name already exists in the phonebook' })
+    // I first decided to go with 409 when posting already existing name:
+    // https://stackoverflow.com/questions/3825990/http-response-code-for-post-when-resource-already-exists
+    // but seems we get same validationerror for everything (could have as well used E11000)
+    if (err.name === 'ValidationError')
+        return res.status(400).send({ error: err.message })
     next(err)
 }
 app.use((err, req, res, next) => {

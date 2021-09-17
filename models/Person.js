@@ -1,13 +1,31 @@
 const mongoose = require('mongoose')
+// unique-validator has not been updated for two years
+// this is the biggest problem I see with npm -> 
+//      # du -hcs . 
+//      25M     .
+//      25M     total
+// so a total of 25M code for such a small webapp, because we have a ton of (possible deprecated) dependencies
+const uniqueValidator = require('mongoose-unique-validator')
 
 const url = process.env.MONGODB_URI
-mongoose.connect(url)
+const connectDB = async () => {
+    try {
+        console.log(`connecting to ${url}`)
+        await mongoose.connect(url)
+        console.log('connected to MongoDB')
+    } catch (error) {
+        console.log('connection to database failed:')
+        console.log(error.message)
+    }
+}
+connectDB()
 
 // https://stackoverflow.com/questions/21971666/mongoose-unique-field
 const personSchema = new mongoose.Schema({
-    name: {type: String, unique: true, required: true, dropDups: true},
-    number: String
+    name: { type: String, minlength: 3, unique: true, required: true, dropDups: true },
+    number: { type: String, minlength: 8, required: true }
 })
+personSchema.plugin(uniqueValidator)
 
 personSchema.set('toJSON', {
     transform: (document, returnedObject) => {
@@ -19,14 +37,4 @@ personSchema.set('toJSON', {
 
 const Person = mongoose.model('Person', personSchema)
 module.exports = Person
-
-const addPerson = async (p) => {
-    try {
-        const response = await p.save()
-        console.log(`added ${response.name} number ${response.number} to phonebook`)
-        mongoose.connection.close()
-    } catch (error) {
-        console.log(error)
-    }
-}
 

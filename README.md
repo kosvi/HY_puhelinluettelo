@@ -19,5 +19,6 @@ Completed:
 - 3.16 puhelinluettelo ja tietokanta, step4
 - 3.17 puhelinluettelo ja tietokanta, step5 *already done in 3.14*
 - 3.18 puhelinluettelo ja tietokanta, step6 *already done in 3.14*
+- 3.19 puhelinluettelo ja tietokanta, step7 *updated to use mongoose-unique-validator*
 
 **All exercises** found [here](https://github.com/kosvi/HY_FullStack)
