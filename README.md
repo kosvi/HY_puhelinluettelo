@@ -15,5 +15,10 @@ Completed:
 - 3.12 tietokanta komentoriviltä
 - 3.13 puhelinluettelo ja tietokanta, step1
 - 3.14 puhelinluettelo ja tietokanta, step2
+- 3.15 puhelinluettelo ja tietokanta, step3
+- 3.16 puhelinluettelo ja tietokanta, step4
+- 3.17 puhelinluettelo ja tietokanta, step5 *already done in 3.14*
+- 3.18 puhelinluettelo ja tietokanta, step6 *already done in 3.14*
+- 3.19 puhelinluettelo ja tietokanta, step7 *updated to use mongoose-unique-validator*
 
 **All exercises** found [here](https://github.com/kosvi/HY_FullStack)

@@ -8,9 +8,11 @@ const app = express()
 morgan.token('postBody', (req) => JSON.stringify(req.body))
 
 app.use(cors())
+app.use(express.static('build'))
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postBody'))
-app.use(express.static('build'))
+
+
 
 const getAll = async () => {
     try {
@@ -22,53 +24,35 @@ const getAll = async () => {
     }
 }
 
-app.get('/info', async (req, res) => {
+app.get('/info', async (req, res, next) => {
     try {
         const persons = await getAll()
         res.send(`<p>Phonebook has ${persons.length} people in it</p><p>${new Date()}</p>`)
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 })
 
-app.get('/api/persons', async (req, res) => {
+app.get('/api/persons', async (req, res, next) => {
     try {
         const persons = await getAll()
         res.json(persons)
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 })
 
-app.post('/api/persons', async (req, res) => {
-    if (!req.body.name || !req.body.number) {
-        // either name or number (or both) are missing
-        res.status(400).json({ error: 'required information missing' })
-        return
-    }
-    // probably not needed -> frontend already handles this
-    // and in case user manages to send existing name, it will fail later
-    // in fact, this isn't even a good way to check this as name could be added/removed
-    // between this check and save()
-    const persons = await getAll()
-    if (persons.some(p => p.name === req.body.name)) {
-        // name already exists
-        res.status(400).json({ error: 'name already exists in the phonebook' })
-    }
-    const name = req.body.name
-    const number = req.body.number
-    const person = new Person({ name: name, number: number })
+app.post('/api/persons', async (req, res, next) => {
+    const person = new Person({ name: req.body.name, number: req.body.number })
     try {
         const savedPerson = await person.save()
         res.json(savedPerson)
     } catch (error) {
-        // most likely the name already exists in the database
-        console.log(error)
-        res.status(400).json({ error: 'unknown error' })
+        next(error)
     }
 })
 
-app.get('/api/persons/:id', async (req, res) => {
+app.get('/api/persons/:id', async (req, res, next) => {
     try {
         const person = await Person.findById(req.params.id)
         if (person)
@@ -77,35 +61,36 @@ app.get('/api/persons/:id', async (req, res) => {
             res.status(404).end()
         }
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 })
 
-app.delete('/api/persons/:id', async (req, res) => {
+app.delete('/api/persons/:id', async (req, res, next) => {
     try {
-        const response = await Person.deleteOne({ _id: req.params.id })
-        console.log(response)
+        await Person.findByIdAndDelete(req.params.id)
+        res.status(204).end()
     } catch (error) {
-        console.log(error)
+        next(error)
     }
-    res.status(204).end()
 })
 
-app.put('/api/persons/:id', async (req, res) => {
-    // little bit copy & paste here, I will refactor later
-    if (!req.body.name || !req.body.number) {
-        // either name or number (or both) are missing
-        res.status(400).json({ error: 'required information missing' })
-        return
-    }
-    const person = { _id: req.params.id, name: req.body.name, number: req.body.number }
+app.put('/api/persons/:id', async (req, res, next) => {
+    // not cool to return this instead of what we get from mongo
+    const person = { id: req.params.id, name: req.body.name, number: req.body.number }
     try {
-        const response = await Person.findByIdAndUpdate(req.params.id, person)
-        console.log(response)
-        res.json(await Person.findById(req.params.id))
+        // findByIdAndUpdate does not run validation according to this:
+        // https://stackoverflow.com/questions/31794558/mongoose-findbyidandupdate-not-running-validations-on-subdocuments
+        // const response = await Person.findByIdAndUpdate(req.params.id, person)
+        const response = await Person.findOneAndUpdate({ _id: req.params.id }, { name: req.body.name, number: req.body.number }, { runValidators: true })
+        if (response) {
+            // findOneAndUpdate returns the original object,
+            // this is a not-so-nice work-around
+            res.json(person)
+        }
+        else
+            res.status(404).end()
     } catch (error) {
-        console.log(error)
-        res.status(404).end()
+        next(error)
     }
 })
 
@@ -114,3 +99,23 @@ app.listen(PORT, () => {
     // what ever we wanna do here
     console.log(`server started on port ${PORT}`)
 })
+
+const errorHandler = (err, req, res, next) => {
+    console.log('Error name: ', err.name)
+    console.log(err.message)
+    if (err.name === 'CastError')
+        return res.status(400).send({ error: 'malformed id' })
+    // I first decided to go with 409 when posting already existing name:
+    // https://stackoverflow.com/questions/3825990/http-response-code-for-post-when-resource-already-exists
+    // but seems we get same validationerror for everything (could have as well used E11000)
+    if (err.name === 'ValidationError')
+        return res.status(400).send({ error: err.message })
+    next(err)
+}
+app.use((err, req, res, next) => {
+    // log all errors
+    console.log('Server experienced an error')
+    console.log(err)
+    next(err)
+})
+app.use(errorHandler)

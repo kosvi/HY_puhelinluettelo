@@ -5,3 +5,23 @@ Content-Type: application/json
     "name": "Pekka Päkä",
     "number": "09-123 456"
 }
+
+###
+
+POST http://localhost:3001/api/persons/
+Content-Type: application/json
+
+{
+    "name": "Maija Mehiläinen",
+    "number": "010 314 513"
+}
+
+###
+
+POST http://localhost:3001/api/persons/
+Content-Type: application/json
+
+{
+    "name": "Foobar",
+    "number": "123"
+}
