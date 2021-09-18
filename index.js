@@ -24,17 +24,6 @@ const getAll = async () => {
     }
 }
 
-const checkBody = (req, res) => {
-    return 0
-    /*
-    if (!req.body.name || !req.body.number) {
-        res.status(400).json({ error: 'required information missing' })
-        return -1
-    }
-    return 0
-    */
-}
-
 app.get('/info', async (req, res, next) => {
     try {
         const persons = await getAll()
@@ -54,9 +43,6 @@ app.get('/api/persons', async (req, res, next) => {
 })
 
 app.post('/api/persons', async (req, res, next) => {
-    if (checkBody(req, res)) {
-        return
-    }
     const person = new Person({ name: req.body.name, number: req.body.number })
     try {
         const savedPerson = await person.save()
@@ -89,14 +75,18 @@ app.delete('/api/persons/:id', async (req, res, next) => {
 })
 
 app.put('/api/persons/:id', async (req, res, next) => {
-    if (checkBody(req, res)) {
-        return
-    }
-    const person = { _id: req.params.id, name: req.body.name, number: req.body.number }
+    // not cool to return this instead of what we get from mongo
+    const person = { id: req.params.id, name: req.body.name, number: req.body.number }
     try {
-        const response = await Person.findByIdAndUpdate(req.params.id, person)
-        if (response)
-            res.json(response)
+        // findByIdAndUpdate does not run validation according to this:
+        // https://stackoverflow.com/questions/31794558/mongoose-findbyidandupdate-not-running-validations-on-subdocuments
+        // const response = await Person.findByIdAndUpdate(req.params.id, person)
+        const response = await Person.findOneAndUpdate({ _id: req.params.id }, { name: req.body.name, number: req.body.number }, { runValidators: true })
+        if (response) {
+            // findOneAndUpdate returns the original object,
+            // this is a not-so-nice work-around
+            res.json(person)
+        }
         else
             res.status(404).end()
     } catch (error) {

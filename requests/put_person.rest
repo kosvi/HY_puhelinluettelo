@@ -16,3 +16,35 @@ Content-Type: application/json
     "name": "Maija Mehiläinen",
     "number": "123"
 }
+
+###
+
+PUT http://localhost:3001/api/persons/6144d4bc2561f5ddf212841e
+Content-Type: application/json
+
+{
+    "_id": "6144d4bc2561f5ddf212841e",
+    "name": "long enough name",
+    "number": "123 123 123"
+}
+
+###
+
+PUT http://localhost:3001/api/persons/614225d0cb94ae29f695eddb
+Content-Type: application/json
+
+{
+    "_id": "614225d0cb94ae29f695eddb",
+    "name": "foobar",
+    "number": "123456789"
+}
+
+### 
+PUT http://localhost:3001/api/persons/1234
+Content-Type: application/json
+
+{
+    "_id": "1234",
+    "name": "foobar",
+    "number": "123456789"
+}
