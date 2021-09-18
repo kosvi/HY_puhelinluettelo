@@ -21,6 +21,6 @@ Completed:
 - 3.18 puhelinluettelo ja tietokanta, step6 *already done in 3.14*
 - 3.19 puhelinluettelo ja tietokanta, step7 *updated to use mongoose-unique-validator*
 - 3.20 puhelinluettelo ja tietokanta, step8
-- 3.21 tietokantaa käyttävä versio Internetiin
+- 3.21 tietokantaa käyttävä versio Internetiin [Heroku](https://puhelinluettelo-583475145.herokuapp.com/)
 
 **All exercises** found [here](https://github.com/kosvi/HY_FullStack)
