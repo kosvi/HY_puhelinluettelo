@@ -1,6 +1,8 @@
 # Puhelinluettelo backend
 
-Completed:
+This repository contains my exercises for this [course](https://fullstackopen.com/osa3)
+
+**Completed:**
 - 3.1 puhelinluettelon backend step1
 - 3.2 puhelinluettelon backend step2
 - 3.3 puhelinluettelon backend step3
