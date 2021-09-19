@@ -25,3 +25,5 @@ Completed:
 - 3.22 lint-konfiguraatio
 
 **All exercises** found [here](https://github.com/kosvi/HY_FullStack)
+
+**Frontend** source is located [here](https://github.com/kosvi/HY_FullStack/tree/main/osa3/puhelinluettelo)
