@@ -22,5 +22,6 @@ Completed:
 - 3.19 puhelinluettelo ja tietokanta, step7 *updated to use mongoose-unique-validator*
 - 3.20 puhelinluettelo ja tietokanta, step8
 - 3.21 tietokantaa käyttävä versio Internetiin [Heroku](https://puhelinluettelo-583475145.herokuapp.com/)
+- 3.22 lint-konfiguraatio
 
 **All exercises** found [here](https://github.com/kosvi/HY_FullStack)
